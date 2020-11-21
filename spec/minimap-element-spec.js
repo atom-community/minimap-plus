@@ -5,6 +5,7 @@ const Main = require('../lib/main')
 const Minimap = require('../lib/minimap')
 const {styles} = require('./helpers/workspace')
 const {mousemove, mousedown, mouseup, mousewheel, touchstart, touchmove} = require('./helpers/events')
+require('jasmine-expect')
 
 const HIDE_ELEMENTS = true
 
@@ -281,7 +282,7 @@ describe('MinimapElement', () => {
       })
 
       it('sets the visible area width and height', () => {
-        expect(visibleArea.offsetWidth).toEqual(minimapElement.clientWidth + Math.floor(minimap.getTextEditorScaledScrollLeft()))
+        expect(visibleArea.offsetWidth).toBeNear(minimapElement.clientWidth + Math.floor(minimap.getTextEditorScaledScrollLeft()), 5)
         expect(visibleArea.offsetHeight).toBeCloseTo(minimap.getTextEditorScaledHeight(), 0)
       })
 
@@ -289,7 +290,7 @@ describe('MinimapElement', () => {
         expect(realOffsetTop(visibleArea)).toBeCloseTo(minimap.getTextEditorScaledScrollTop() - minimap.getScrollTop(), 0)
 
         expect(Math.floor(parseFloat(visibleArea.style.borderLeftWidth)))
-        .toEqual(Math.floor(minimap.getTextEditorScaledScrollLeft()))
+        .toBeNear(Math.floor(minimap.getTextEditorScaledScrollLeft()), 5)
       })
 
       it('offsets the canvas when the scroll does not match line height', () => {
@@ -540,7 +541,7 @@ describe('MinimapElement', () => {
           expect(minimapElement.offsetHeight).toEqual(editorElement.offsetHeight)
 
           expect(canvas.offsetWidth / devicePixelRatio).toBeCloseTo(minimapElement.offsetWidth, 0)
-          expect(canvas.offsetHeight / devicePixelRatio).toBeCloseTo(minimapElement.offsetHeight + minimap.getLineHeight(), 0)
+          expect(canvas.offsetHeight / devicePixelRatio).toBeNear(minimapElement.offsetHeight + minimap.getLineHeight(), 2)
         })
       })
 
@@ -743,7 +744,7 @@ describe('MinimapElement', () => {
 
           it('scrolls the editor to an arbitrary location', () => {
             let expectedScroll = maxScroll * scrollRatio
-            expect(editorElement.getScrollTop()).toBeCloseTo(expectedScroll, 0)
+            expect(editorElement.getScrollTop()).toBeNear(expectedScroll, 3)
           })
 
           describe('dragging the visible area with middle mouse button ' +
@@ -792,7 +793,7 @@ describe('MinimapElement', () => {
 
         it('scrolls the editor to the line below the mouse', () => {
           mousedown(canvas)
-          expect(editorElement.getScrollTop()).toBeCloseTo(480)
+          expect(editorElement.getScrollTop()).toBeNear(480, 8)
         })
 
         describe('when independentMinimapScroll setting is enabled', () => {
@@ -803,7 +804,7 @@ describe('MinimapElement', () => {
 
           it('scrolls the editor to the line below the mouse', () => {
             mousedown(canvas)
-            expect(editorElement.getScrollTop()).toBeCloseTo(480)
+            expect(editorElement.getScrollTop()).toBeNear(480, 8)
           })
         })
 
@@ -1050,7 +1051,7 @@ describe('MinimapElement', () => {
 
           it('scrolls the editor so that the visible area was moved down by 40 pixels', () => {
             let {top} = visibleArea.getBoundingClientRect()
-            expect(top).toBeCloseTo(originalTop + 26, -1)
+            expect(top).toBeNear(originalTop + 40, 15)
           })
         })
       })
@@ -1814,8 +1815,8 @@ describe('MinimapElement', () => {
             it('positions the quick settings view next to the minimap', () => {
               let minimapBounds = minimapElement.getFrontCanvas().getBoundingClientRect()
 
-              expect(realOffsetTop(quickSettingsElement)).toBeCloseTo(minimapBounds.top, 0)
-              expect(realOffsetLeft(quickSettingsElement)).toBeCloseTo(minimapBounds.right, 0)
+              expect(realOffsetTop(quickSettingsElement)).toBeNear(minimapBounds.top, 1)
+              expect(realOffsetLeft(quickSettingsElement)).toBeNear(minimapBounds.right, 1)
             })
           })
         })
